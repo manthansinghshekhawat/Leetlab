@@ -22,6 +22,7 @@ model User{
   name String?
   email String @unique
   image String?
+  password String
   role UserRole @default(USER)
   createdAT DateTime @default(now())
   updatedAT DateTime @updatedAt
