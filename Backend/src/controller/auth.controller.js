@@ -131,6 +131,7 @@ export const check = async (req, res) => {
     return res.status(500).json({
       message: "error Cheking user ",
       error: error,
+      user: req.user,
     });
   }
 };
