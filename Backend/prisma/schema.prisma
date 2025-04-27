@@ -17,6 +17,11 @@ enum UserRole{
   ADMIN
   USER
 }
+enum Difficulty{
+  EASY
+  MEDIUM
+  HARD
+}
 model User{
   id String @id @default(uuid())
   name String?
@@ -26,7 +31,29 @@ model User{
   role UserRole @default(USER)
   createdAT DateTime @default(now())
   updatedAT DateTime @updatedAt
+  problems Problem[]
 
+
+}
+
+model Problem{
+  id String @id @default(uuid())
+  title String
+  description String
+  difficulty Difficulty
+  tags String[]
+  userId String
+  examples String
+  constraints String
+  hints String?
+  editorial String?
+  testcases Json
+  codeSnippets Json
+  refernceSolutions Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
 
 }
 
