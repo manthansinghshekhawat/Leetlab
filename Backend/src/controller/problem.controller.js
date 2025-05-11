@@ -103,7 +103,65 @@ export const getAllProblems = async (req, res) => {
     });
   }
 };
-export const getProblemById = async (req, res) => {};
-export const updateProblemById = async (req, res) => {};
-export const deleteProblemById = async (req, res) => {};
+export const getProblemById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const problem = await db.problem.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!problem) {
+      return res.status(404).json({
+        message: "Problem Not found ",
+      });
+    }
+    return res.status(200).json({
+      sucess: true,
+      message: "Fetched data Successfully",
+      problems: problem,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to Fethc problems",
+      error: error.message,
+    });
+  }
+};
+// TODO ::
+export const updateProblemById = async (req, res) => {
+  //find the question id
+  //check if the problem exist
+  //update the problem using the same logic
+  //instead of create use the update query
+  //update the referenceSolutions as example
+};
+export const deleteProblemById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const problem = await db.problem.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!problem) {
+      return res.status(404).json({
+        message: "Problem Not found to delete ",
+      });
+    }
+    await db.problem.delete({
+      where: {
+      id
+    }})
+    return res.status(200).json({
+      sucess: true,
+      message: "Deleted Problem Successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to delete problems",
+      error: error.message,
+    });
+  }
+};
 export const getAllProblemSolvedByUser = async (req, res) => {};
