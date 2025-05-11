@@ -105,10 +105,11 @@ export const getAllProblems = async (req, res) => {
 };
 export const getProblemById = async (req, res) => {
   const { id } = req.params;
+  console.log(id, "id");
   try {
     const problem = await db.problem.findUnique({
       where: {
-        id,
+        id: String(id),
       },
     });
     if (!problem) {
@@ -151,8 +152,9 @@ export const deleteProblemById = async (req, res) => {
     }
     await db.problem.delete({
       where: {
-      id
-    }})
+        id,
+      },
+    });
     return res.status(200).json({
       sucess: true,
       message: "Deleted Problem Successfully",
