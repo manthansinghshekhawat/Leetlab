@@ -8,14 +8,27 @@ export const getJudge0LanguageId = (language) => {
   };
   return langugeMap[language.toUpperCase()];
 };
-
 export const submitBatch = async (submissions) => {
-  const { data } = await axios.post(
-    `${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=false`,
-    { submissions }
-  );
-  console.log("submission results ", data);
-  return data;
+  try {
+    console.log("befor request ");
+    const options = {
+      method: "POST",
+      url: "https://judge0-ce.p.sulu.sh/submissions/batch",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${process.env.SULU_KEY}`,
+      },
+      data: { submissions },
+    };
+
+    const { data } = await axios.request(options);
+    console.log("submission results ", data);
+    return data;
+  } catch (error) {
+    console.error("Error submitting batch:", error.message);
+    throw error;
+  }
 };
 const sleep = (ms) =>
   new Promise((resolve) => {
@@ -23,22 +36,32 @@ const sleep = (ms) =>
   });
 export const poolBatchResponse = async (tokens) => {
   while (true) {
-    const data = await axios.get(
-      `${process.env.JUDGE0_API_URL}/submissions/batch`,
-      {
+    try {
+      const options = {
+        method: "GET",
+        url: "https://judge0-ce.p.sulu.sh/submissions/batch",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${process.env.SULU_KEY}`,
+        },
         params: {
           tokens: tokens.join(","),
           base64_encoded: false,
         },
+      };
+
+      const { data } = await axios.request(options);
+      const results = data.submissions;
+      const isAllDone = results.every(
+        (r) => r.status.id !== 1 && r.status.id !== 2
+      );
+      if (isAllDone) {
+        return results;
       }
-    );
-    const results = data.submissions;
-    const isAllDone = results.every(
-      (r) => r.status.id !== 1 && r.status.id !== 2
-    );
-    if (isAllDone) {
-      return results;
+      await sleep(1000);
+    } catch (error) {
+      console.error("Error polling batch:", error.message);
+      throw error;
     }
-    await sleep(1000);
   }
 };

@@ -6,8 +6,8 @@ import {
   getAllProblemSolvedByUser,
   getProblemById,
   updateProblemById,
-} from "../controller/problem.controller";
-import { authMiddleware, checkAdmin } from "../middleware/auth.middleware";
+} from "../controller/problem.controller.js";
+import { authMiddleware, checkAdmin } from "../middleware/auth.middleware.js";
 const problemRoutes = express.Router();
 
 problemRoutes.post(
