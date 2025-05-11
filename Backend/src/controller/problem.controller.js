@@ -58,16 +58,16 @@ export const createProblems = async (req, res) => {
     console.log("sab chal gya aage badho ");
     const newProblem = await db.problem.create({
       data: {
-      title,
-      description,
-      difficulty,
-      tags,
-      examples: JSON.stringify(examples),
-      constraints,
-      testcases: testCases,
-      codeSnippets,
-      refernceSolutions: referenceSolutions,
-      userId: req.user.id,
+        title,
+        description,
+        difficulty,
+        tags,
+        examples: JSON.stringify(examples),
+        constraints,
+        testcases: testCases,
+        codeSnippets,
+        refernceSolutions: referenceSolutions,
+        userId: req.user.id,
       },
     });
 
@@ -83,7 +83,26 @@ export const createProblems = async (req, res) => {
   }
 };
 
-export const getAllProblems = async (req, res) => {};
+export const getAllProblems = async (req, res) => {
+  try {
+    const problems = await db.problem.findMany();
+    if (!problems) {
+      return res.status(404).json({
+        message: "Problem Not found ",
+      });
+    }
+    return res.status(200).json({
+      sucess: true,
+      message: "Fetched data Successfully",
+      problems: problems,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to Fethc problems",
+      error: error.message,
+    });
+  }
+};
 export const getProblemById = async (req, res) => {};
 export const updateProblemById = async (req, res) => {};
 export const deleteProblemById = async (req, res) => {};
