@@ -1,9 +1,26 @@
 import React from "react";
-
+import { Navigate, Route, Routes } from "react-router-dom";
+import HomePage from "./page/HomePage";
+import LoginPage from "./page/LoginPage";
+import SignUpPage from "./page/SignUpPage";
 export const App = () => {
+  const [authUser, setAuthUser] = React.useState(null);
   return (
-    <div className="text-2xl font-bold text-indigo-400 ">
-      <h1>hello there</h1>
+    <div className="flex flex-col items-center justify-start">
+      <Routes>
+        <Route
+          path="/"
+          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/signup"
+          element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+        />
+      </Routes>
     </div>
   );
 };
